@@ -1,0 +1,9 @@
+{
+  "name": "my-cloudflare-downloader",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {},
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
