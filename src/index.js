@@ -16,6 +16,52 @@ export default {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #0b0b0f;
             overflow: hidden;
+            cursor: none;
+        }
+
+        .cursor {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-2px, -2px);
+            transition: transform 120ms ease-out;
+            filter: drop-shadow(0 0 8px rgba(255, 102, 77, 0.45));
+        }
+
+        .cursor svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .cursor.is-clicking {
+            transform: translate(-2px, -2px) scale(0.82);
+        }
+
+        .cursor-trail {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 9999px;
+            pointer-events: none;
+            z-index: 9998;
+            background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255, 75, 43, 0.38) 45%, rgba(0,0,0,0) 72%);
+            transform: translate(-50%, -50%);
+            opacity: 0.8;
+        }
+
+        @media (hover: none) {
+            body {
+                cursor: auto;
+            }
+
+            .cursor,
+            .cursor-trail {
+                display: none;
+            }
         }
 
         /* 2026 Design Aesthetic: Dynamic Neo-brutalism & Soft Glows */
@@ -78,6 +124,62 @@ export default {
         const button = document.getElementById('chaosBtn');
         const text = headline.textContent.trim();
         headline.innerHTML = '';
+
+        const cursor = document.createElement('div');
+        cursor.className = 'cursor';
+        cursor.setAttribute('aria-hidden', 'true');
+        cursor.innerHTML = '\n            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">\n                <path d="M4 3L19 11L13 13L10 21L8 15L4 17V3Z" fill="#fff7ed" stroke="#ff4b2b" stroke-width="1.3" stroke-linejoin="round"/>\n            </svg>\n        ';
+        document.body.appendChild(cursor);
+
+        const trails = Array.from({ length: 8 }, () => {
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            document.body.appendChild(trail);
+            return trail;
+        });
+
+        let cursorX = window.innerWidth / 2;
+        let cursorY = window.innerHeight / 2;
+        let targetX = cursorX;
+        let targetY = cursorY;
+
+        const animateCursor = () => {
+            cursorX += (targetX - cursorX) * 0.24;
+            cursorY += (targetY - cursorY) * 0.24;
+
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+
+            trails.forEach((trail, index) => {
+                const trailX = cursorX - (targetX - cursorX) * (index + 1) * 0.14;
+                const trailY = cursorY - (targetY - cursorY) * (index + 1) * 0.14;
+                trail.style.left = trailX + 'px';
+                trail.style.top = trailY + 'px';
+                trail.style.opacity = String(Math.max(0.2, 0.95 - index * 0.1));
+                trail.style.transform = 'translate(-50%, -50%) scale(' + Math.max(0.3, 1 - index * 0.1) + ')';
+            });
+
+            requestAnimationFrame(animateCursor);
+        };
+
+        window.addEventListener('mousemove', (event) => {
+            targetX = event.clientX;
+            targetY = event.clientY;
+        });
+
+        window.addEventListener('mousedown', () => {
+            cursor.classList.add('is-clicking');
+        });
+
+        window.addEventListener('mouseup', () => {
+            cursor.classList.remove('is-clicking');
+        });
+
+        window.addEventListener('mouseleave', () => {
+            cursor.classList.remove('is-clicking');
+        });
+
+        animateCursor();
 
         // Split text into individual letters wrapped in spans, preserving spaces
         const letters = Array.from(text).map(char => {
