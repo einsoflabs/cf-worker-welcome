@@ -1,5 +1,5 @@
 {
-  "name": "my-cloudflare-downloader",
+  "name": "cf-worker-welcome",
   "main": "src/index.js",
   "compatibility_date": "2026-07-19"
 }
