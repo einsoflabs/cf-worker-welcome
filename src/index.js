@@ -59,12 +59,28 @@ export default {
         }
 
         .window {
-            width: min(920px, 100%);
+            width: min(960px, 100%);
             border: 2px solid #2f3f63;
             background: linear-gradient(180deg, #131c2f, #0c1323 70%);
-            box-shadow: 0 0 0 1px rgba(255,255,255,0.06) inset, 0 20px 60px var(--shadow);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.06) inset, 0 20px 80px var(--shadow);
             position: relative;
             overflow: hidden;
+            transform: perspective(1200px) rotateX(1deg);
+        }
+
+        .window::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, rgba(0,229,255,0.08), transparent 25%, rgba(255,78,219,0.08) 70%, transparent 100%);
+            mix-blend-mode: screen;
+            pointer-events: none;
+            animation: shimmer 8s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         .titlebar {
@@ -77,6 +93,21 @@ export default {
             color: white;
             font-weight: 700;
             letter-spacing: 0.03em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .titlebar::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent);
+            transform: translateX(-100%);
+            animation: sweep 5s linear infinite;
+        }
+
+        @keyframes sweep {
+            100% { transform: translateX(100%); }
         }
 
         .titlebar .dot {
@@ -121,6 +152,19 @@ export default {
             padding: 1rem 0 0.2rem;
             display: grid;
             gap: 0.8rem;
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: auto -1rem -1.2rem auto;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,229,255,0.16), transparent 70%);
+            filter: blur(20px);
+            pointer-events: none;
         }
 
         .eyebrow {
@@ -183,8 +227,19 @@ export default {
         .about-box {
             padding: 1rem;
             border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.03);
+            background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(0,229,255,0.04));
             box-shadow: inset 1px 1px rgba(255,255,255,0.04), inset -1px -1px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.06), transparent);
+            transform: translateX(-100%);
+            animation: sweep 7s linear infinite;
         }
 
         .about-box h2 {
@@ -236,12 +291,13 @@ export default {
             position: fixed;
             left: 0;
             top: 0;
-            width: 26px;
-            height: 26px;
+            width: 28px;
+            height: 28px;
             pointer-events: none;
             z-index: 9999;
             transform: translate(-50%, -50%);
             transition: transform 110ms ease-out;
+            filter: drop-shadow(0 0 10px rgba(0,229,255,0.65));
         }
 
         .cursor .ring {
